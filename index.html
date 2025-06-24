@@ -68,6 +68,23 @@
       text-decoration: underline;
       color: #181830;
     }
+    footer
+    {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #242424;
+      color: #aaa;
+      font-size: 0.9em;
+      border-top: 7px solid #181830;
+      box-sizing: border-box;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -122,34 +139,20 @@
 
   <br><br><br><br><br>
   </main>
-<footer style="
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: #242424;
-  color: #aaa;
-  font-size: 0.9em;
-  border-top: 7px solid #181830;
-  box-sizing: border-box;
-">
-    <div>
-      <a href="terms.html" style="color: #4ea1d3; text-decoration: none;">
-        Terms of Service & Privacy Policy
-      </a>
-    </div>
-    <div>
-      <a href="https://github.com/LazyGran/chippy_site" style="color: #aaaaaa; text-decoration: none;">
-        Website's Github repository
-      </a>
-    </div>
-    <div style="font-style: italic;">
-      The house always wins… eventually.
-    </div>
-  </footer>
+<footer>
+  <div style="flex: 1; text-align: left;">
+    <a href="terms.html" style="color: #4ea1d3; text-decoration: none;">
+      Terms of Service & Privacy Policy
+    </a>
+  </div>
+  <div style="flex: 1; text-align: center;">
+    <a href="https://github.com/LazyGran/chippy_site" style="color: #aaaaaa; text-decoration: none;">
+      Website's Github repository
+    </a>
+  </div>
+  <div style="flex: 1; text-align: right; font-style: italic;">
+    The House always wins... eventually.
+  </div>
+</footer>
 </body>
 </html>
