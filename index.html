@@ -99,10 +99,10 @@
       <a href="https://discord.com/oauth2/authorize?client_id=1373621336982949992">Add Chippy</a> <a href="https://github.com/LazyGran/gambling">Github repository</a>
 
       <br><br>
-      <b>Donations:</b>
-      <br><br>
-      <a href="https://ko-fi.com/xgraron" target="_blank">
-      <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Donate with Ko-fi">
+
+      <button id="b_kofi" style="background: none; border: none; padding: 0; cursor: pointer;">
+        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Donate with Ko-fi" />
+      </button>
 </a>
    </p>
    <section style="margin-top: 40px;">
@@ -219,5 +219,22 @@
     The House always wins... eventually.
   </div>
 </footer>
+<script>
+  const script = document.createElement('script');
+  script.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
+  script.onload = () => {
+    document.getElementById("b_kofi").addEventListener("click", () => 
+    {
+      kofiWidgetOverlay.draw('xgraron', 
+      {
+        type: 'popup',
+        'popup.donateButton.text': 'Support me',
+        'popup.donateButton.background-color': '#323842',
+        'popup.donateButton.text-color': '#fff'
+      })
+    })
+  }
+  document.body.appendChild(script);
+</script>
 </body>
 </html>
