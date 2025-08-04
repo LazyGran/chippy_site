@@ -100,9 +100,9 @@
 
       <br><br>
 
-      <button id="b_kofi" style="background: none; border: none; padding: 0; cursor: pointer;">
+      <a href="#" onclick="openKofiPopup(); return false;">
         <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Donate with Ko-fi" />
-      </button>
+      </a>
 </a>
    </p>
    <section style="margin-top: 40px;">
@@ -220,21 +220,20 @@
   </div>
 </footer>
 <script>
-  const script = document.createElement('script');
-  script.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
-  script.onload = () => {
-    document.getElementById("b_kofi").addEventListener("click", () => 
-    {
-      kofiWidgetOverlay.draw('xgraron', 
-      {
-        type: 'popup',
-        'popup.donateButton.text': 'Support me',
-        'popup.donateButton.background-color': '#323842',
-        'popup.donateButton.text-color': '#fff'
-      })
-    })
+  function openKofiPopup() 
+  {
+    const width = 600;
+    const height = 700;
+
+    const left = (screen.width / 2) - (width / 2)
+    const top = (screen.height / 2) - (height / 2)
+
+    window.open(
+      'https://ko-fi.com/xgraron',
+      'kofiPopup',
+      `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
+    );
   }
-  document.body.appendChild(script);
 </script>
 </body>
 </html>
