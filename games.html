@@ -85,6 +85,54 @@
       box-sizing: border-box;
       font-weight: bold;
     }
+    .card 
+    {
+      width: 80px;
+      height: 115px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      position: relative;
+      display: inline-block;
+      margin-left: -20px;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    .card:first-child 
+    {
+      margin-left: 0;
+    }
+    .card.show 
+    {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #player-cards, #dealer-cards 
+    {
+      display: inline-flex;
+      justify-content: center;
+      position: relative;
+      padding-left: 40px; /* offset to allow overlap */
+    }
+    button 
+    {
+      background-color: #4ea1d3;
+      color: white;
+      border: none;
+      width: 100px;
+      height: 50px;
+      margin: 0 10px;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover 
+    {
+      background-color: #367da3;
+    }
   </style>
 </head>
 <body>
@@ -94,8 +142,27 @@
   <main>
     <h1>Coming soon</h1>
     <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur sollicitudin ex vel fermentum. Donec eget feugiat nisi, ut pretium libero. Donec sed elit nisi. Quisque dictum dolor at hendrerit viverra. Integer sagittis nisl a mi eleifend, eu varius justo lobortis. Nunc ac hendrerit nisl. Sed pharetra, ante eu scelerisque.<br><br>
-   </p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur sollicitudin ex vel fermentum. Donec eget feugiat nisi, ut pretium libero. Donec sed elit nisi. Quisque dictum dolor at hendrerit viverra. Integer sagittis nisl a mi eleifend, eu varius justo lobortis. Nunc ac hendrerit nisl. Sed pharetra, ante eu scelerisque.<br>
+    </p>
+    <div id="blackjack-game" style="text-align:center; margin-top: 50px;">
+      <div style="margin-top: 20px;">
+        <a href="#" onclick="hit(); return false;">
+          <button id="b_hit">Hit</button>
+        </a>
+        <a href="#" onclick="stand(); return false;">
+          <button id="b_stand">Stand</button>
+        </a>
+      </div>
+      <div>
+        <h3>Dealer's Hand</h3>
+        <div id="dealer_hand" style="height: 120px;"></div>
+      </div>
+      <div style="margin-top: 40px;">
+        <h3>Your Hand</h3>
+        <div id="hand" style="height: 120px;"></div>
+      </div>
+      <div id="status" style="margin-top: 20px; font-weight: bold; color: #eee;"></div>
+    </div>
   </main>
 <footer>
   <div style="flex: 1; text-align: left;">
@@ -113,7 +180,93 @@
   </div>
 </footer>
 <script>
-  //big funny
+  let deck = [ "Aceh", "Aces", "Aced", "Acec", "2h", "2s", "2d", "2c", "3h", "3s", "3d", "3c", "4h", "4s", "4d", "4c", "5h", "5s", "5d", "5c", "6h", "6s", "6d", "6c", "7h", "7s", "7d", "7c", "8h", "8s", "8d", "8c", "9h", "9s", "9d", "9c", "10h", "10s", "10d", "10c", "Jackh", "Jacks", "Jackd", "Jackc", "Queenh", "Queens", "Queend", "Queenc", "Kingh", "Kings", "Kingd", "Kingc" ]
+
+  const cards =
+  {
+      "Aceh": "Ace",
+      "Aces": "Ace",
+      "Aced": "Ace",
+      "Acec": "Ace",
+      "2h": 2,
+      "2s": 2,
+      "2d": 2,
+      "2c": 2,
+      "3h": 3,
+      "3s": 3,
+      "3d": 3,
+      "3c": 3,
+      "4h": 4,
+      "4s": 4,
+      "4d": 4,
+      "4c": 4,
+      "5h": 5,
+      "5s": 5,
+      "5d": 5,
+      "5c": 5,
+      "6h": 6,
+      "6s": 6,
+      "6d": 6,
+      "6c": 6,
+      "7h": 7,
+      "7s": 7,
+      "7d": 7,
+      "7c": 7,
+      "8h": 8,
+      "8s": 8,
+      "8d": 8,
+      "8c": 8,
+      "9h": 9,
+      "9s": 9,
+      "9d": 9,
+      "9c": 9,
+      "10h": 10,
+      "10s": 10,
+      "10d": 10,
+      "10c": 10,
+      "Jackh": "Jack",
+      "Jacks": "Jack",
+      "Jackd": "Jack",
+      "Jackc": "Jack",
+      "Queenh": "Queen",
+      "Queens": "Queen",
+      "Queend": "Queen",
+      "Queenc": "Queen",
+      "Kingh": "King",
+      "Kings": "King",
+      "Kingd": "King",
+      "Kingc": "King"
+  }
+
+  function add(cID, name)
+  {
+    const container = document.getElementById(cID)
+    const image     = document.createElement("img")
+
+    image.src       = `cards/${name}.png`
+    image.className = "card"
+
+    container.appendChild(image)
+
+    setTimeout(() => 
+    {
+      image.classList.add("show")
+    }, 50)
+  }
+
+  function stand()
+  {
+    console.log("Stand")
+  }
+
+  function hit()
+  {
+    const card = Math.floor(Math.random() * deck.length)
+
+    deck.splice(card, 1)
+    
+    add("hand", deck[card])
+  }
 </script>
 </body>
 </html>
