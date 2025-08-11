@@ -77,7 +77,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 20px;
+      padding: 5px 10px;
       background-color: #242424;
       color: #aaa;
       font-size: 0.9em;
@@ -87,13 +87,14 @@
     }
     .card 
     {
-      width: 80px;
-      height: 115px;
+      width: 60px;
+      height: 90px;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      filter: drop-shadow(0 16px 16px rgba(0,0,0,0.5));
       position: relative;
       display: inline-block;
-      margin-left: -20px;
+      margin-left: -7px;
+      padding-bottom: 10px;
       transition: transform 0.4s ease, opacity 0.4s ease;
       opacity: 0;
       transform: translateY(-20px);
@@ -112,7 +113,14 @@
       display: inline-flex;
       justify-content: center;
       position: relative;
-      padding-left: 40px; /* offset to allow overlap */
+      padding-left: 40px;
+    }
+    #hand
+    {
+      display: flex;
+      flex-wrap: wrap; 
+      justify-content: center;
+      min-height: 120px; 
     }
     button 
     {
@@ -153,13 +161,13 @@
           <button id="b_stand">Stand</button>
         </a>
       </div>
+      <div style="margin-top: 30px;">
+        <div id="hand" style="min-height: 120px;"></div>
+        <h3>Your Hand</h3>
+      </div>
       <div>
         <h3>Dealer's Hand</h3>
         <div id="dealer_hand" style="height: 120px;"></div>
-      </div>
-      <div style="margin-top: 40px;">
-        <h3>Your Hand</h3>
-        <div id="hand" style="height: 120px;"></div>
       </div>
       <div id="status" style="margin-top: 20px; font-weight: bold; color: #eee;"></div>
     </div>
@@ -180,7 +188,10 @@
   </div>
 </footer>
 <script>
-  let deck = [ "Aceh", "Aces", "Aced", "Acec", "2h", "2s", "2d", "2c", "3h", "3s", "3d", "3c", "4h", "4s", "4d", "4c", "5h", "5s", "5d", "5c", "6h", "6s", "6d", "6c", "7h", "7s", "7d", "7c", "8h", "8s", "8d", "8c", "9h", "9s", "9d", "9c", "10h", "10s", "10d", "10c", "Jackh", "Jacks", "Jackd", "Jackc", "Queenh", "Queens", "Queend", "Queenc", "Kingh", "Kings", "Kingd", "Kingc" ]
+
+  var deck = [ "Aceh", "Aces", "Aced", "Acec", "2h", "2s", "2d", "2c", "3h", "3s", "3d", "3c", "4h", "4s", "4d", "4c", "5h", "5s", "5d", "5c", "6h", "6s", "6d", "6c", "7h", "7s", "7d", "7c", "8h", "8s", "8d", "8c", "9h", "9s", "9d", "9c", "10h", "10s", "10d", "10c", "Jackh", "Jacks", "Jackd", "Jackc", "Queenh", "Queens", "Queend", "Queenc", "Kingh", "Kings", "Kingd", "Kingc" ]
+
+  var turn = true
 
   const cards =
   {
@@ -256,16 +267,28 @@
 
   function stand()
   {
-    console.log("Stand")
+    turn = false
+
+    for(let i = 1; i < 5; i++)
+    {
+      const card = Math.floor(Math.random() * deck.length)
+
+      add("dealer_hand", deck[card])
+
+      deck.splice(card, 1)
+    }
   }
 
   function hit()
   {
-    const card = Math.floor(Math.random() * deck.length)
+    if(turn)
+    {
+      const card = Math.floor(Math.random() * (deck.length - 1))
 
-    deck.splice(card, 1)
-    
-    add("hand", deck[card])
+      add("hand", deck[card])
+
+      deck.splice(card, 1)
+    }
   }
 </script>
 </body>
