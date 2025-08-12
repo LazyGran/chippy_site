@@ -87,14 +87,15 @@
     }
     .card 
     {
-      width: 60px;
+      vertical-align: bottom;
+      width: 80px;
       height: 90px;
       border-radius: 8px;
       filter: drop-shadow(0 16px 16px rgba(0,0,0,0.5));
       position: relative;
       display: inline-block;
+      margin-bottom: 0px;
       margin-left: -7px;
-      padding-bottom: 10px;
       transition: transform 0.4s ease, opacity 0.4s ease;
       opacity: 0;
       transform: translateY(-20px);
@@ -161,15 +162,15 @@
           <button id="b_stand">Stand</button>
         </a>
       </div>
-      <div style="margin-top: 30px;">
+      <div style="margin-top: 50px;">
         <div id="hand" style="min-height: 120px;"></div>
-        <h3>Your Hand</h3>
+        <h3 >Your Hand</h3>
       </div>
       <div>
         <h3>Dealer's Hand</h3>
         <div id="dealer_hand" style="height: 120px;"></div>
       </div>
-      <div id="status" style="margin-top: 20px; font-weight: bold; color: #eee;"></div>
+      <div id="status" style="margin-top: 1px; font-weight: bold; color: #eee;"></div>
     </div>
   </main>
 <footer>
