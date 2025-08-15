@@ -121,6 +121,7 @@
       display: flex;
       flex-wrap: wrap; 
       justify-content: center;
+      min-height: 90px;
     }
     button 
     {
@@ -156,6 +157,9 @@
       <div style="margin-top: 20px;">
         <a href="#" onclick="hit(); return false;">
           <button id="b_hit">Hit</button>
+        </a>
+        <a href="#" onclick="restart(); return false;">
+          <button id="b_restart" style="display: none">Restart</button>
         </a>
         <a href="#" onclick="stand(); return hit_enabled = false;">
           <button id="b_stand">Stand</button>
@@ -349,39 +353,42 @@
     {
       stand_enabled = false 
 
-      for(let i = 1; i < 5; i++)
+      while(dealer_points < 17)
       {
-        while(dealer_points < 17)
-        {
-          dealer_points = await dealer_draw(dealer_hand, dealer_points)
-        }
+        dealer_points = await dealer_draw(dealer_hand, dealer_points)
+      }
 
-        if(busted)
-        {
-          //player bust
-          console.log("bust")
-        }
-        else if(dealer_points > 21)
-        {
-          //dealer bust
-          console.log("win1")
-        }
-        else if(points > dealer_points)
-        {
-          //player win
-          console.log("win2")
-        }
-        else if(points === dealer_points)
-        {
-          //push
-          console.log("push")
-        }
-        else
-        {
-          //lost
-          console.log("lost")
-        }
-      }   
+      console.log(points, dealer_points)
+
+      if(busted)
+      {
+        //player bust
+        console.log("bust")
+      }
+      else if(dealer_points > 21)
+      {
+        //dealer bust
+        console.log("win1")
+      }
+      else if(points > dealer_points)
+      {
+        //player win
+        console.log("win2")
+      }
+      else if(points === dealer_points)
+      {
+        //push
+        console.log("push")
+      }
+      else
+      {
+        //lost
+        console.log("lost")
+      }
+
+      document.getElementById("b_restart").style.display  = "inline-block"
+      document.getElementById("b_hit").style.display      = "none"
+      document.getElementById("b_stand").style.display    = "none"
     }
   }
 
@@ -399,6 +406,54 @@
         stand()
       }
     }
+  }
+
+  function restart()
+  {
+    hand          = []
+    points        = 0
+    dealer_hand   = []
+    dealer_points = 0
+    hit_enabled   = true
+    stand_enabled = true
+    busted        = false
+
+    deck = template
+
+    const dealer = document.getElementById("dealer_hand")
+    const player = document.getElementById("hand")
+
+    const d_cards = dealer.querySelectorAll(".card")
+    const p_cards = player.querySelectorAll(".card")
+
+    d_cards.forEach(card =>
+    {
+      card.classList.remove("show")
+
+      setTimeout(() =>
+      {
+        card.remove()
+      }, 400)
+    })
+
+    p_cards.forEach(card =>
+    {
+      card.classList.remove("show")
+
+      setTimeout(() =>
+      {
+        card.remove()
+      }, 400)
+    })
+
+    setTimeout(() =>
+    {
+      document.getElementById("b_restart").style.display  = "none"
+      document.getElementById("b_hit").style.display      = "inline-block"
+      document.getElementById("b_stand").style.display    = "inline-block"
+
+      initial()
+    }, 500)
   }
 </script>
 </body>
