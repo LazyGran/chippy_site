@@ -149,16 +149,16 @@
     <img src="gambling_pfp.png" alt="Chippy Avatar" />
   </header>
   <main>
-    <h1>Coming soon</h1>
+    <h1>Blackjack</h1>
     <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur sollicitudin ex vel fermentum. Donec eget feugiat nisi, ut pretium libero. Donec sed elit nisi. Quisque dictum dolor at hendrerit viverra. Integer sagittis nisl a mi eleifend, eu varius justo lobortis. Nunc ac hendrerit nisl. Sed pharetra, ante eu scelerisque.<br>
+      Dealer stands on soft 17 and higher<br>
     </p>
     <div id="blackjack-game" style="text-align:center; margin-top: 50px;">
       <div style="margin-top: 20px;">
         <a href="#" onclick="hit(); return false;">
           <button id="b_hit">Hit</button>
         </a>
-        <a href="#" onclick="stand(); return false;">
+        <a href="#" onclick="stand(); return hit_enabled = false;">
           <button id="b_stand">Stand</button>
         </a>
       </div>
@@ -190,9 +190,16 @@
 </footer>
 <script>
 
-  var deck = [ "Aceh", "Aces", "Aced", "Acec", "2h", "2s", "2d", "2c", "3h", "3s", "3d", "3c", "4h", "4s", "4d", "4c", "5h", "5s", "5d", "5c", "6h", "6s", "6d", "6c", "7h", "7s", "7d", "7c", "8h", "8s", "8d", "8c", "9h", "9s", "9d", "9c", "10h", "10s", "10d", "10c", "Jackh", "Jacks", "Jackd", "Jackc", "Queenh", "Queens", "Queend", "Queenc", "Kingh", "Kings", "Kingd", "Kingc" ]
+  var template  = [ "Aceh", "Aces", "Aced", "Acec", "2h", "2s", "2d", "2c", "3h", "3s", "3d", "3c", "4h", "4s", "4d", "4c", "5h", "5s", "5d", "5c", "6h", "6s", "6d", "6c", "7h", "7s", "7d", "7c", "8h", "8s", "8d", "8c", "9h", "9s", "9d", "9c", "10h", "10s", "10d", "10c", "Jackh", "Jacks", "Jackd", "Jackc", "Queenh", "Queens", "Queend", "Queenc", "Kingh", "Kings", "Kingd", "Kingc" ]
+  var deck      = template
 
-  var turn = true
+  var hand          = []
+  var points        = 0
+  var dealer_hand   = []
+  var dealer_points = 0
+  var hit_enabled   = true
+  var stand_enabled = true
+  var busted        = false
 
   const cards =
   {
@@ -250,6 +257,75 @@
       "Kingc": "King"
   }
 
+  const values = 
+  {
+  "Ace":  11,
+  "Jack": 10,
+  "Queen": 10,
+  "King": 10
+  }
+
+  initial()
+
+  async function initial()
+  {
+    for(let i = 0; i < 2; i++)
+    {
+      //points          = await player_draw(hand, points)
+      dealer_points   = await dealer_draw(dealer_hand, dealer_points)
+    }
+  } 
+
+  async function player_draw(hand, points)
+  {
+    const drawn = await ch.draw(UID)
+
+    hand.push(drawn.card)
+    hand_em.push(drawn.emoji)
+
+    return calculate(hand)
+  }
+
+  async function dealer_draw(dealer_hand, dealer_points)
+  {
+    const card = Math.floor(Math.random() * (deck.length - 1))
+
+    add("dealer_hand", deck[card])
+
+    deck.splice(card, 1)
+
+    dealer_hand.push(cards[deck[card]])
+
+    dealer_points   += values[cards[deck[card]]] || cards[deck[card]]
+
+    return calculate(dealer_hand)
+  }
+
+  async function calculate(hand)
+  {
+    let total = 0
+    let aces  = 0
+
+    for(let card of hand)
+    {
+      if(card === "Ace")
+      {
+        total += 11
+        aces ++
+      }
+      else total += values[card] || card;
+    }
+
+    while (total > 21 && aces > 0)
+    {
+      total -= 10
+      aces --
+    }
+
+    console.log(total)
+    return total
+  }
+
   function add(cID, name)
   {
     const container = document.getElementById(cID)
@@ -266,29 +342,25 @@
     }, 50)
   }
 
-  function stand()
+  async function stand()
   {
-    turn = false
-
-    for(let i = 1; i < 5; i++)
+    if(stand_enabled)
     {
-      const card = Math.floor(Math.random() * deck.length)
-
-      add("dealer_hand", deck[card])
-
-      deck.splice(card, 1)
+      for(let i = 1; i < 5; i++)
+      {
+        while(dealer_points < 17)
+        {
+          dealer_points = await dealer_draw( dealer_hand, dealer_points)
+        }
+      }   
     }
   }
 
   function hit()
   {
-    if(turn)
+    if(hit_enabled)
     {
-      const card = Math.floor(Math.random() * (deck.length - 1))
 
-      add("hand", deck[card])
-
-      deck.splice(card, 1)
     }
   }
 </script>
