@@ -121,7 +121,6 @@
       display: flex;
       flex-wrap: wrap; 
       justify-content: center;
-      min-height: 120px; 
     }
     button 
     {
@@ -163,7 +162,7 @@
         </a>
       </div>
       <div style="margin-top: 50px;">
-        <div id="hand" style="min-height: 120px;"></div>
+        <div id="hand"></div>
         <h3 >Your Hand</h3>
       </div>
       <div>
@@ -271,17 +270,20 @@
   {
     for(let i = 0; i < 2; i++)
     {
-      //points          = await player_draw(hand, points)
+      points          = await player_draw(hand, points)
       dealer_points   = await dealer_draw(dealer_hand, dealer_points)
     }
   } 
 
   async function player_draw(hand, points)
   {
-    const drawn = await ch.draw(UID)
+    const card = Math.floor(Math.random() * (deck.length - 1))
 
-    hand.push(drawn.card)
-    hand_em.push(drawn.emoji)
+    add("hand", deck[card])
+
+    deck.splice(card, 1)
+
+    hand.push(cards[deck[card]])
 
     return calculate(hand)
   }
@@ -322,7 +324,6 @@
       aces --
     }
 
-    console.log(total)
     return total
   }
 
@@ -350,17 +351,17 @@
       {
         while(dealer_points < 17)
         {
-          dealer_points = await dealer_draw( dealer_hand, dealer_points)
+          dealer_points = await dealer_draw(dealer_hand, dealer_points)
         }
       }   
     }
   }
 
-  function hit()
+  async function hit()
   {
     if(hit_enabled)
     {
-
+      points = await player_draw(hand, points)
     }
   }
 </script>
