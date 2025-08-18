@@ -15,32 +15,24 @@
     }
     header 
     {
-      background: url('gambling_banner.png') no-repeat center center/cover;
+      background: url('games_banner.png') no-repeat center center/cover;
       height: 370px;
       min-height: 100;
-      height: 30vw;
+      height: 30vw;https://github.com/LazyGran/gambling/issues
       max-height: 300px;
       border: 7px solid #181830;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-    }
-    header img 
-    {
-      min-width: 110px;
-      width: 15vw;
-      max-width: 220px;
-      aspect-ratio: 1 / 1;
-      border-radius: 50%;
-      border: 7px solid #181830;
-      position: absolute;
-      bottom: -90px;
+      color: #bfbfbf;
+      size: 10vw;
+      font-family: Arial, sans-serif;
     }
     main 
     {
       max-width: 600px;
-      margin: 100px auto 0;
+      margin: auto 0;
       padding: 0 20px;
       text-align: center;
     }
@@ -159,10 +151,9 @@
 </head>
 <body>
   <header>
-    <img src="gambling_pfp.png" alt="Chippy Avatar" />
+    <h1 style="filter: drop-shadow(0 5px 16px black);">Blackjack</h1>
   </header>
   <main>
-    <h1>Blackjack</h1>
     <p>
       Dealer stands on soft 17 and higher<br>
     </p>
@@ -181,10 +172,10 @@
       </div>
       <div style="margin-top: 50px;">
         <div id="hand"></div>
-        <h3 >Your Hand</h3>
+        <h3 id="h_p">Your Hand</h3>
       </div>
       <div>
-        <h3>Dealer's Hand</h3>
+        <h3 id="d_p">Dealer's Hand</h3>
         <div id="dealer_hand" style="height: 120px;"></div>
       </div>
       <div id="status" style="margin-top: 1px; font-weight: bold; color: #eee;"></div>
@@ -218,6 +209,10 @@
   var hit_enabled   = true
   var stand_enabled = true
   var busted        = false
+
+  const state = document.getElementById("state");
+  const hp    = document.getElementById("h_p");
+  const dp    = document.getElementById("d_p");
 
   const cards =
   {
@@ -291,6 +286,9 @@
     {
       points          = await player_draw(hand, points)
       dealer_points   = await dealer_draw(dealer_hand, dealer_points)
+
+      console.log(points)
+      console.log(dealer_points)
     }
   } 
 
@@ -300,11 +298,10 @@
 
     add("hand", deck[card])
 
-    deck.splice(card, 1)
-
     hand.push(cards[deck[card]])
 
-    return calculate(hand)
+    deck.splice(card, 1)
+    return calculate(hand, "player")
   }
 
   async function dealer_draw(dealer_hand, dealer_points)
@@ -313,16 +310,15 @@
 
     add("dealer_hand", deck[card])
 
-    deck.splice(card, 1)
-
     dealer_hand.push(cards[deck[card]])
 
     dealer_points   += values[cards[deck[card]]] || cards[deck[card]]
 
-    return calculate(dealer_hand)
+    deck.splice(card, 1)
+    return calculate(dealer_hand, "dealer")
   }
 
-  async function calculate(hand)
+  async function calculate(hand, who)
   {
     let total = 0
     let aces  = 0
@@ -343,6 +339,13 @@
       aces --
     }
 
+    console.log(hand)
+    console.log(total)
+    console.log("-----------------")
+
+    if(who === "player")  hp.innerHTML = `Your hand <span style="color: grey">(${total})</span>`
+    else                  dp.innerHTML = `Dealer's hand <span style="color: grey">(${total})</span>`
+ 
     return total
   }
 
@@ -372,9 +375,6 @@
       {
         dealer_points = await dealer_draw(dealer_hand, dealer_points)
       }
-
-      console.log(points, dealer_points)
-      const state = document.getElementById("state");
 
       if(busted)
       {
