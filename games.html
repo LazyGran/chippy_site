@@ -181,24 +181,24 @@
     </p>
     <div id="game-selection" style="text-align:center; margin-top: 10px;">
       <div class="wrapper">
-        <button id="bj"></button>
-        <span>Blackjack</span>
+          <button id="bj"></button>
+          <span>Blackjack</span>
       </div>
       <div class="wrapper">
-        <button id="pokr"></button>
-        <span>Poker</span>
+          <button id="pokr"></button>
+          <span>Poker</span>
       </div>
       <div class="wrapper">
-        <button id="horl"></button>
-        <span>High or Low</span>
+          <button id="horl"></button>
+          <span>High or Low</span>
       </div>
     </div>
     <br><br><br>
   </main>
 <footer>
   <div style="flex: 1; text-align: left;">
-    <a href="terms.html" style="color: #4ea1d3; text-decoration: none;">
-      Terms of Service & Privacy Policy
+    <a href="index.html" style="color: #4ea1d3; text-decoration: none;">
+      Home
     </a>
   </div>
   <div style="flex: 1; text-align: center;">
@@ -211,7 +211,18 @@
   </div> 
 </footer>
 <script>
-
+  document.getElementById("bj").addEventListener("click", () =>
+  {
+    window.location.href = "blackjack.html"
+  })
+  document.getElementById("horl").addEventListener("click", () =>
+  {
+    alert("Coming Soon")
+  })
+  document.getElementById("pokr").addEventListener("click", () =>
+  {
+    alert("Coming Soon")
+  })
 </script>
 </body>
 </html>
