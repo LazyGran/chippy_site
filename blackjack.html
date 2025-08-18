@@ -87,7 +87,7 @@
       min-width: 40;
       width: 20vw;
       max-width: 80px;
-      height: 24vw;
+      height: 22vw;
       min-height: 45px;
       max-height: 90px; 
       border-radius: 8px;
@@ -129,12 +129,11 @@
       color: white;
       border: none;
       min-width: 50px;
-      width: 24vw;
+      width: 30vw;
       max-width: 100px;
       min-height: 25;
-      height: 12vw;
+      height: 15vw;
       max-height: 50px;
-      margin: 0 10px;
       border-radius: 8px;
       font-size: 1em;
       font-weight: bold;
@@ -158,6 +157,14 @@
     </p>
     <h1 id="state" style="font-size: 1.5em"></h2>
     <div id="blackjack-game" style="text-align:center; margin-top: 50px;">
+      <div style="margin-top: 50px;">
+        <div id="hand"></div>
+        <h3 id="h_p">Your Hand</h3>
+      </div>
+      <div>
+        <h3 id="d_p">Dealer's Hand</h3>
+        <div id="dealer_hand" style="height: 120px;"></div>
+      </div>
       <div style="margin-top: 20px;">
         <a href="#" onclick="hit(); return false;">
           <button id="b_hit">Hit</button>
@@ -169,15 +176,6 @@
           <button id="b_stand">Stand</button>
         </a>
       </div>
-      <div style="margin-top: 50px;">
-        <div id="hand"></div>
-        <h3 id="h_p">Your Hand</h3>
-      </div>
-      <div>
-        <h3 id="d_p">Dealer's Hand</h3>
-        <div id="dealer_hand" style="height: 120px;"></div>
-      </div>
-      <div id="status" style="margin-top: 1px; font-weight: bold; color: #eee;"></div>
     </div>
     <br><br><br>
   </main>
