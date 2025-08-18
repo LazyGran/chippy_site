@@ -15,9 +15,8 @@
     }
     header 
     {
-      background: url('gambling_banner.png') no-repeat center center/cover;
-      height: 370px;
-      min-height: 100;
+      background: url('games_banner.png') no-repeat center center/cover;
+      min-height: 100px;
       height: 30vw;
       max-height: 300px;
       border: 7px solid #181830;
@@ -25,22 +24,14 @@
       align-items: center;
       justify-content: center;
       position: relative;
-    }
-    header img 
-    {
-      min-width: 110px;
-      width: 15vw;
-      max-width: 220px;
-      aspect-ratio: 1 / 1;
-      border-radius: 50%;
-      border: 7px solid #181830;
-      position: absolute;
-      bottom: -90px;
+      color: #bfbfbf;
+      font-size: 5vw;
+      font-family: Arial, sans-serif;
     }
     main 
     {
       max-width: 600px;
-      margin: 100px auto 0;
+      margin: 0 auto;
       padding: 0 20px;
       text-align: center;
     }
@@ -93,10 +84,14 @@
     .card 
     {
       vertical-align: bottom;
-      width: 80px;
-      height: 90px;
+      min-width: 40;
+      width: 20vw;
+      max-width: 80px;
+      height: 22vw;
+      min-height: 45px;
+      max-height: 90px; 
       border-radius: 8px;
-      filter: drop-shadow(0 16px 16px rgba(0,0,0,0.5));
+      filter: drop-shadow(0 4px 16px rgba(0,0,0,1));
       position: relative;
       display: inline-block;
       margin-bottom: 0px;
@@ -126,22 +121,49 @@
       display: flex;
       flex-wrap: wrap; 
       justify-content: center;
-      min-height: 120px; 
+      min-height: 90px;
     }
     button 
     {
-      background-color: #4ea1d3;
+      background-color: #242424;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
       color: white;
       border: none;
-      width: 100px;
-      height: 50px;
-      margin: 0 10px;
+      min-width: 25px;
+      width: 25vw;
+      max-width: 100px;
+      min-height: 25;
+      height: 25vw;
+      max-height: 100px;
       border-radius: 8px;
-      font-size: 1em;
+      margin-left: 1vw;
+      margin-right: 1vw;
+      font-size: 0.5em;
       font-weight: bold;
       cursor: pointer;
       transition: background-color 0.2s ease;
+      border-radius: 50%;
     }
+
+    .wrapper
+    {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .wrapper span
+    {
+      margin-top: 0;
+      margin-bottom: 2em;
+      color: #bfbfbf;
+    }
+
+    #bj { background-image: url('blackjack.png') }
+    #horl { background-image: url('horl.png') }
+    #pokr { background-image: url('poker.png') }
 
     button:hover 
     {
@@ -151,32 +173,27 @@
 </head>
 <body>
   <header>
-    <img src="gambling_pfp.png" alt="Chippy Avatar" />
+    <h1 style="filter: drop-shadow(0 5px 16px black);">Games</h1>
   </header>
   <main>
-    <h1>Coming soon</h1>
     <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur sollicitudin ex vel fermentum. Donec eget feugiat nisi, ut pretium libero. Donec sed elit nisi. Quisque dictum dolor at hendrerit viverra. Integer sagittis nisl a mi eleifend, eu varius justo lobortis. Nunc ac hendrerit nisl. Sed pharetra, ante eu scelerisque.<br>
+      Click below to play one of three games feature in Chippy!<br>
     </p>
-    <div id="blackjack-game" style="text-align:center; margin-top: 50px;">
-      <div style="margin-top: 20px;">
-        <a href="#" onclick="hit(); return false;">
-          <button id="b_hit">Hit</button>
-        </a>
-        <a href="#" onclick="stand(); return false;">
-          <button id="b_stand">Stand</button>
-        </a>
+    <div id="game-selection" style="text-align:center; margin-top: 10px;">
+      <div class="wrapper">
+        <button id="bj"></button>
+        <span>Blackjack</span>
       </div>
-      <div style="margin-top: 50px;">
-        <div id="hand" style="min-height: 120px;"></div>
-        <h3 >Your Hand</h3>
+      <div class="wrapper">
+        <button id="pokr"></button>
+        <span>Poker</span>
       </div>
-      <div>
-        <h3>Dealer's Hand</h3>
-        <div id="dealer_hand" style="height: 120px;"></div>
+      <div class="wrapper">
+        <button id="horl"></button>
+        <span>High or Low</span>
       </div>
-      <div id="status" style="margin-top: 1px; font-weight: bold; color: #eee;"></div>
     </div>
+    <br><br><br>
   </main>
 <footer>
   <div style="flex: 1; text-align: left;">
@@ -191,10 +208,10 @@
   </div>
   <div style="flex: 1; text-align: right; font-style: italic;">
     The House always wins... eventually.
-  </div>
+  </div> 
 </footer>
 <script>
-  //script
+
 </script>
 </body>
 </html>
