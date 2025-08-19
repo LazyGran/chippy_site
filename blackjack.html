@@ -123,6 +123,12 @@
       justify-content: center;
       min-height: 90px;
     }
+    #dealer_hand
+    {
+      display: flex;
+      flex-wrap: wrap; 
+      justify-content: center;
+    }
     button 
     {
       background-color: #4ea1d3;
@@ -198,14 +204,15 @@
 
   var deck      = [ "Aceh", "Aces", "Aced", "Acec", "2h", "2s", "2d", "2c", "3h", "3s", "3d", "3c", "4h", "4s", "4d", "4c", "5h", "5s", "5d", "5c", "6h", "6s", "6d", "6c", "7h", "7s", "7d", "7c", "8h", "8s", "8d", "8c", "9h", "9s", "9d", "9c", "10h", "10s", "10d", "10c", "Jackh", "Jacks", "Jackd", "Jackc", "Queenh", "Queens", "Queend", "Queenc", "Kingh", "Kings", "Kingd", "Kingc" ]
 
-  var hand          = []
-  var points        = 0
-  var dealer_hand   = []
-  var dealer_points = 0
-  var dealer_turn   = 1
-  var hit_enabled   = true
-  var stand_enabled = true
-  var busted        = false
+  var hand            = []
+  var points          = 0
+  var dealer_hand     = []
+  var dealer_points   = 0
+  var dealer_turn     = 1
+  var hit_enabled     = true
+  var stand_enabled   = true
+  var busted          = false
+  var restart_enabled = true
 
   const state = document.getElementById("state");
   const hp    = document.getElementById("h_p");
@@ -281,6 +288,8 @@
 
   async function initial()
   {
+    restart_enabled = true;
+    
     for(let i = 0; i < 2; i++)
     {
       points          = await player_draw(hand, points)
@@ -429,14 +438,17 @@
 
   function restart()
   {
-    hand          = []
-    points        = 0
-    dealer_hand   = []
-    dealer_points = 0
-    dealer_turn   = 1
-    hit_enabled   = true
-    stand_enabled = true
-    busted        = false
+    if(restart_enabled === false) return;
+
+    hand            = []
+    points          = 0
+    dealer_hand     = []
+    dealer_points   = 0
+    dealer_turn     = 1
+    hit_enabled     = true
+    stand_enabled   = true
+    busted          = false
+    restart_enabled = false
 
     deck = [ "Aceh", "Aces", "Aced", "Acec", "2h", "2s", "2d", "2c", "3h", "3s", "3d", "3c", "4h", "4s", "4d", "4c", "5h", "5s", "5d", "5c", "6h", "6s", "6d", "6c", "7h", "7s", "7d", "7c", "8h", "8s", "8d", "8c", "9h", "9s", "9d", "9c", "10h", "10s", "10d", "10c", "Jackh", "Jacks", "Jackd", "Jackc", "Queenh", "Queens", "Queend", "Queenc", "Kingh", "Kings", "Kingd", "Kingc" ]
 
