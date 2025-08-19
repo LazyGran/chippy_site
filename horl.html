@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="icon" href="gambling_favicon.png" type="image/png" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chippy - Gambling Bot</title>
+  <style>
+    body 
+    {
+      margin: 0;
+      background-color: #242424; 
+      color: #eee;
+      font-family: Arial, sans-serif;
+    }
+    header 
+    {
+      background: url('games_banner.png') no-repeat center center/cover;
+      min-height: 100px;
+      height: 30vw;
+      max-height: 300px;
+      border: 7px solid #181830;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      color: #bfbfbf;
+      font-size: 5vw;
+      font-family: Arial, sans-serif;
+    }
+    main 
+    {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+    main a 
+    {
+      color: #4ea1d3;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+    }
+    main a:hover 
+    {
+      text-decoration: underline;
+      color: #181830;
+    }
+    nav 
+    {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      font-weight: bold;
+    }
+    nav a 
+    {
+      color: #4ea1d3;
+      text-decoration: none;
+    }
+    nav a:hover 
+    {
+      text-decoration: underline;
+      color: #181830;
+    }
+    footer
+    {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 10px;
+      background-color: #242424;
+      color: #aaa;
+      font-size: 0.9em;
+      border-top: 7px solid #181830;
+      box-sizing: border-box;
+      font-weight: bold;
+    }
+    .card 
+    {
+      vertical-align: bottom;
+      min-width: 40;
+      width: 20vw;
+      max-width: 80px;
+      height: 22vw;
+      min-height: 45px;
+      max-height: 90px; 
+      border-radius: 8px;
+      filter: drop-shadow(0 4px 16px rgba(0,0,0,1));
+      position: relative;
+      display: inline-block;
+      margin-bottom: 0px;
+      margin-left: -7px;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    .card:first-child 
+    {
+      margin-left: 0;
+    }
+    .card.show 
+    {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #player-cards, #dealer-cards 
+    {
+      display: inline-flex;
+      justify-content: center;
+      position: relative;
+      padding-left: 40px;
+    }
+    #hand
+    {
+      display: flex;
+      flex-wrap: wrap; 
+      justify-content: center;
+      min-height: 90px;
+    }
+    #dealer_hand
+    {
+      display: flex;
+      flex-wrap: wrap; 
+      justify-content: center;
+    }
+    button 
+    {
+      background-color: #4ea1d3;
+      color: white;
+      border: none;
+      min-width: 50px;
+      width: 30vw;
+      max-width: 100px;
+      min-height: 25;
+      height: 15vw;
+      max-height: 50px;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover 
+    {
+      background-color: #367da3;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 style="filter: drop-shadow(0 5px 16px black);">High or Low</h1>
+  </header>
+  <main>
+    <p>
+      Guess the next card<br>
+    </p>
+    <h1 id="state" style="font-size: 1.5em"></h2>
+    <div id="horl-game" style="text-align:center; margin-top: 50px;">
+      <div style="margin-top: 50px;">
+        <div id="card"></div>
+        <h3 id="h_p">Your Card</h3>
+      </div>
+      <div>
+        <h3 id="d_p">Dealer's Card</h3>
+        <div id="dealer_card" style="height: 120px;"></div>
+      </div>
+      <div style="margin-top: 20px;">
+        <a href="#" onclick="higher(); return false;">
+          <button id="b_higher">Higher</button>
+        </a>
+        <a href="#" onclick="restart(); return false;">
+          <button id="b_restart" style="display: none">Restart</button>
+        </a>
+        <a href="#" onclick="lower(); return buttons_enabled = false;">
+          <button id="b_lower">Lower</button>
+        </a>
+      </div>
+    </div>
+    <br><br><br>
+  </main>
+<footer>
+  <div style="flex: 1; text-align: left;">
+    <a href="games.html" style="color: #4ea1d3; text-decoration: none;">
+      Games
+    </a>
+  </div>
+  <div style="flex: 1; text-align: center;">
+    <a href="https://github.com/LazyGran/chippy_site" style="color: #aaaaaa; text-decoration: none;">
+      Website's Github repository
+    </a>
+  </div>
+  <div style="flex: 1; text-align: right; font-style: italic;">
+    The House always wins... eventually.
+  </div> 
+</footer>
+<script>
+
+  var deck      = [ "Aceh", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "10h", "Jackh", "Queenh", "Kingh" ]
+
+  var dealer_turn     = 1
+  var buttons_enabled = true
+  var restart_enabled = true
+
+  const state = document.getElementById("state");
+  const hp    = document.getElementById("h_p");
+  const dp    = document.getElementById("d_p");
+
+  let card;
+  let dealer_card;
+
+  const values =
+  {
+    "Aceh"    : 1,
+    "2h"      : 2,
+    "3h"      : 3,
+    "4h"      : 4,
+    "5h"      : 5,
+    "6h"      : 6,
+    "7h"      : 7,
+    "8h"      : 8,
+    "9h"      : 9,
+    "10h"     : 10,
+    "Jackh"   : 11,
+    "Queenh"  : 12,
+    "Kingh"   : 13,
+  }
+
+  initial()
+
+  async function initial()
+  {
+    restart_enabled = true;
+    
+      card          = await player_draw()
+      dealer_card   = await dealer_draw()
+  } 
+
+  async function player_draw(hand, points)
+  {
+    const card = Math.floor(Math.random() * (deck.length - 1))
+
+    add("card", deck[card])
+
+    c = values[deck[card]]
+
+    deck.splice(card, 1)
+
+    hp.innerHTML = `Your card <span style="color: grey">(Value: ${c})</span>`
+
+    return c;
+  }
+
+  async function dealer_draw(dealer_hand, dealer_points)
+  {
+    const card = Math.floor(Math.random() * (deck.length - 1))
+
+    add("dealer_card", deck[card])
+
+    c = values[deck[card]]
+
+    deck.splice(card, 1)
+
+    dp.innerHTML = `Dealer's card <span style="color: grey">(Value: ${c})</span>`
+
+    return c;
+  }
+
+
+  function add(cID, name)
+  {
+    const container = document.getElementById(cID)
+    const image     = document.createElement("img")
+
+    image.src = `cards/${name}.png`;
+    image.className = "card"
+
+    container.appendChild(image)
+
+    setTimeout(() => 
+    {
+      image.classList.add("show")
+    }, 50)
+  }
+
+  async function higher()
+  {
+    const chosen = "higher";
+
+    showdown(chosen)
+  }
+
+  async function lower()
+  {
+    const chosen = "lower";
+
+    showdown(chosen)
+  }
+
+  function restart()
+  {
+    if(restart_enabled === false) return;
+
+    var dealer_turn     = 1
+    var buttons_enabled = true
+    var restart_enabled = false
+
+    deck = [ "Aceh", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "10h", "Jackh", "Queenh", "Kingh" ]
+
+    const dealer = document.getElementById("dealer_card")
+    const player = document.getElementById("card")
+
+    const d_cards = dealer.querySelectorAll(".card")
+    const p_cards = player.querySelectorAll(".card")
+
+    d_cards.forEach(card =>
+    {
+      card.classList.remove("show")
+
+      setTimeout(() =>
+      {
+        card.remove()
+      }, 400)
+    })
+
+    p_cards.forEach(card =>
+    {
+      card.classList.remove("show")
+
+      setTimeout(() =>
+      {
+        card.remove()
+      }, 400)
+    })
+
+    setTimeout(() =>
+    {
+      state.innerHTML = "";
+
+      document.getElementById("b_restart").style.display  = "none"
+      document.getElementById("b_higher").style.display   = "inline-block"
+      document.getElementById("b_lower").style.display    = "inline-block"
+
+      hp.innerHTML = `Your card`
+      dp.innerHTML = `Dealer's card`
+
+      initial()
+    }, 500)
+  }
+
+  function showdown(chosen)
+  {
+    console.log(chosen)
+    console.log(card)
+    console.log(dealer_card)
+
+    document.getElementById("b_restart").style.display  = "inline-block"
+    document.getElementById("b_higher").style.display      = "none"
+    document.getElementById("b_lower").style.display    = "none"
+  }
+</script>
+</body>
+</html>
