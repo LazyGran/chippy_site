@@ -289,7 +289,7 @@
   async function initial()
   {
     restart_enabled = true;
-    
+
     for(let i = 0; i < 2; i++)
     {
       points          = await player_draw(hand, points)
@@ -411,7 +411,7 @@
       else
       {
         //lost
-        state.innerHTML = `<span style="color: red">Lost!</span> The Dealer has more points.`
+        state.innerHTML = `<span style="color: red">Lose!</span> The Dealer has more points.`
       }
 
       document.getElementById("b_restart").style.display  = "inline-block"
