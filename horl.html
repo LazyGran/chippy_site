@@ -121,13 +121,18 @@
       display: flex;
       flex-wrap: wrap; 
       justify-content: center;
-      min-height: 90px;
+      height: 22vw;
+      min-height: 45px;
+      max-height: 90px; 
     }
     #dealer_hand
     {
       display: flex;
       flex-wrap: wrap; 
       justify-content: center;
+      height: 22vw;
+      min-height: 45px;
+      max-height: 90px; 
     }
     button 
     {
@@ -214,6 +219,7 @@
 
   let card;
   let dealer_card;
+  let dealer_first;
 
   const values =
   {
@@ -239,10 +245,9 @@
     restart_enabled = true;
     
       card          = await player_draw()
-      dealer_card   = await dealer_draw()
   } 
 
-  async function player_draw(hand, points)
+  async function player_draw()
   {
     const card = Math.floor(Math.random() * (deck.length - 1))
 
@@ -257,9 +262,11 @@
     return c;
   }
 
-  async function dealer_draw(dealer_hand, dealer_points)
+  async function dealer_draw()
   {
     const card = Math.floor(Math.random() * (deck.length - 1))
+    const container = document.getElementById("dealer_card")
+    const image     = document.createElement("img")
 
     add("dealer_card", deck[card])
 
@@ -278,7 +285,8 @@
     const container = document.getElementById(cID)
     const image     = document.createElement("img")
 
-    image.src = `cards/${name}.png`;
+
+    image.src = `cards/${name}.png`
     image.className = "card"
 
     container.appendChild(image)
@@ -307,7 +315,6 @@
   {
     if(restart_enabled === false) return;
 
-    var dealer_turn     = 1
     var buttons_enabled = true
     var restart_enabled = false
 
@@ -354,14 +361,12 @@
     }, 500)
   }
 
-  function showdown(chosen)
+  async function showdown(chosen)
   {
-    console.log(chosen)
-    console.log(card)
-    console.log(dealer_card)
+    dealer_card   = await dealer_draw()
 
     document.getElementById("b_restart").style.display  = "inline-block"
-    document.getElementById("b_higher").style.display      = "none"
+    document.getElementById("b_higher").style.display   = "none"
     document.getElementById("b_lower").style.display    = "none"
   }
 </script>
