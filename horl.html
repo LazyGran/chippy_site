@@ -209,6 +209,7 @@
 
   var deck      = [ "Aceh", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "10h", "Jackh", "Queenh", "Kingh" ]
 
+  var final           = 0
   var dealer_turn     = 1
   var buttons_enabled = true
   var restart_enabled = true
@@ -299,24 +300,21 @@
 
   async function higher()
   {
-    const chosen = "higher";
-
-    showdown(chosen)
+    showdown(1)
   }
 
   async function lower()
   {
-    const chosen = "lower";
-
-    showdown(chosen)
+    showdown(2)
   }
 
   function restart()
   {
     if(restart_enabled === false) return;
 
-    var buttons_enabled = true
-    var restart_enabled = false
+    final           = 0
+    buttons_enabled = true
+    restart_enabled = false
 
     deck = [ "Aceh", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "10h", "Jackh", "Queenh", "Kingh" ]
 
@@ -364,6 +362,20 @@
   async function showdown(chosen)
   {
     dealer_card   = await dealer_draw()
+
+    if(dealer_card > card)  final = 1
+    if(dealer_card < card)  final = 2
+
+    if(chosen === final)
+    {
+      //player win
+      state.innerHTML = `<span style="color: green">Win!</span>`
+    }
+    else
+    {
+      //lost
+      state.innerHTML = `<span style="color: red">Lose!</span>`
+    }
 
     document.getElementById("b_restart").style.display  = "inline-block"
     document.getElementById("b_higher").style.display   = "none"
