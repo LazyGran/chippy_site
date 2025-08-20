@@ -377,68 +377,66 @@
 
   async function stand()
   {
-    if(stand_enabled)
+    if(!stand_enabled) return;
+
+    stand_enabled = false 
+
+    dealer_end(dealer_hand)
+
+    while(dealer_points < 17)
     {
-      stand_enabled = false 
-
-      dealer_end(dealer_hand)
-
-      while(dealer_points < 17)
-      {
-        dealer_points = await dealer_draw(dealer_hand, dealer_points)
-      }
-
-      if(busted)
-      {
-        //player bust
-        state.innerHTML = `<span style="color: red">Bust!</span> You went over 21.`
-      }
-      else if(dealer_points > 21)
-      {
-        //dealer bust
-        state.innerHTML = `<span style="color: green">Win!</span> The dealer went over 21.`
-      }
-      else if(points > dealer_points)
-      {
-        //player win
-        state.innerHTML = `<span style="color: green">Win!</span> You have more points.`
-      }
-      else if(points === dealer_points)
-      {
-        //push
-        state.innerHTML = `<span style="color: yellow">Push!</span> You & the Dealer have the same points.`
-      }
-      else
-      {
-        //lost
-        state.innerHTML = `<span style="color: red">Lose!</span> The Dealer has more points.`
-      }
-
-      document.getElementById("b_restart").style.display  = "inline-block"
-      document.getElementById("b_hit").style.display      = "none"
-      document.getElementById("b_stand").style.display    = "none"
+      dealer_points = await dealer_draw(dealer_hand, dealer_points)
     }
+
+    if(busted)
+    {
+      //player bust
+      state.innerHTML = `<span style="color: red">Bust!</span> You went over 21.`
+    }
+    else if(dealer_points > 21)
+    {
+      //dealer bust
+      state.innerHTML = `<span style="color: green">Win!</span> The dealer went over 21.`
+    }
+    else if(points > dealer_points)
+    {
+      //player win
+      state.innerHTML = `<span style="color: green">Win!</span> You have more points.`
+    }
+    else if(points === dealer_points)
+    {
+      //push
+      state.innerHTML = `<span style="color: yellow">Push!</span> You & the Dealer have the same points.`
+    }
+    else
+    {
+      //lost
+      state.innerHTML = `<span style="color: red">Lose!</span> The Dealer has more points.`
+    }
+
+    document.getElementById("b_restart").style.display  = "inline-block"
+    document.getElementById("b_hit").style.display      = "none"
+    document.getElementById("b_stand").style.display    = "none"
   }
 
   async function hit()
   {
-    if(hit_enabled)
+    if(!hit_enabled) return
+
+    points = await player_draw(hand, points)
+
+    if(points > 21)           
     {
-      points = await player_draw(hand, points)
+      hit_enabled   = false
+      busted        = true
 
-      if(points > 21)           
-      {
-        hit_enabled   = false
-        busted        = true
-
-        stand()
-      }
+      stand()
     }
   }
 
   function restart()
   {
-    if(restart_enabled === false) return;
+    if(!restart_enabled) return;
 
     hand            = []
     points          = 0

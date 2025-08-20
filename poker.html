@@ -176,13 +176,13 @@
         <div id="dealer_hand" style="height: 120px;"></div>
       </div>
       <div style="margin-top: 20px;">
-        <a href="#" onclick="hit(); return false;">
+        <a href="#" onclick="call(); return false;">
           <button id="b_call">Call</button>
         </a>
         <a href="#" onclick="restart(); return false;">
           <button id="b_restart" style="display: none">Restart</button>
         </a>
-        <a href="#" onclick="stand(); return false;">
+        <a href="#" onclick="fold(); return false;">
           <button id="b_fold">Fold</button>
         </a>
       </div>
@@ -316,12 +316,18 @@
 
   async function call()
   {
-    console.log("balls2electricgoogaloo")
+    if(!call_enabled) return;
+
+    call_enabled = false
+    fold_enabled = false
   }
 
   async function fold()
   {
-    console.log("ball")
+    if(!fold_enabled) return;
+    
+    call_enabled = false
+    fold_enabled = false
   }
 
   function restart()
