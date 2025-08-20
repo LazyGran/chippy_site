@@ -121,18 +121,13 @@
       display: flex;
       flex-wrap: wrap; 
       justify-content: center;
-      height: 22vw;
-      min-height: 45px;
-      max-height: 90px; 
+      min-height: 90px;
     }
     #dealer_hand
     {
       display: flex;
       flex-wrap: wrap; 
       justify-content: center;
-      height: 22vw;
-      min-height: 45px;
-      max-height: 90px; 
     }
     button 
     {
@@ -160,31 +155,35 @@
 </head>
 <body>
   <header>
-    <h1 style="filter: drop-shadow(0 5px 16px black);">High or Low</h1>
+    <h1 style="filter: drop-shadow(0 5px 16px black);">Blackjack</h1>
   </header>
   <main>
     <p>
-      Guess the next card<br>
+      Dealer must qualify with a Pair of 4's<br>
     </p>
     <h1 id="state" style="font-size: 1.5em"></h2>
-    <div id="horl-game" style="text-align:center; margin-top: 50px;">
+    <div id="blackjack-game" style="text-align:center; margin-top: 50px;">
       <div style="margin-top: 50px;">
-        <div id="card"></div>
-        <h3 id="h_p">Your Card</h3>
+        <div id="hand"></div>
+        <h3 id="h_p">Your Hand</h3>
       </div>
       <div>
-        <h3 id="d_p">Dealer's Card</h3>
-        <div id="dealer_card" style="height: 120px;"></div>
+      <div>
+        <h3 id="c_p">Community cards</h3>
+        <div id="community_hand" style="height: 120px;"></div>
+      </div>
+        <h3 id="d_p">Dealer's Hand</h3>
+        <div id="dealer_hand" style="height: 120px;"></div>
       </div>
       <div style="margin-top: 20px;">
-        <a href="#" onclick="higher(); return false;">
-          <button id="b_higher">Higher</button>
+        <a href="#" onclick="hit(); return false;">
+          <button id="b_call">Call</button>
         </a>
         <a href="#" onclick="restart(); return false;">
           <button id="b_restart" style="display: none">Restart</button>
         </a>
-        <a href="#" onclick="lower(); return buttons_enabled = false;">
-          <button id="b_lower">Lower</button>
+        <a href="#" onclick="stand(); return false;">
+          <button id="b_fold">Fold</button>
         </a>
       </div>
     </div>
@@ -202,41 +201,39 @@
     </a>
   </div>
   <div style="flex: 1; text-align: right; font-style: italic;">
-    Prediction isn't always easy..
+    Royal Flush'ing money down the toilet!
   </div> 
 </footer>
 <script>
 
-  var deck      = [ "Aceh", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "10h", "Jackh", "Queenh", "Kingh" ]
+  var deck      = [ "Aceh", "Aces", "Aced", "Acec", "2h", "2s", "2d", "2c", "3h", "3s", "3d", "3c", "4h", "4s", "4d", "4c", "5h", "5s", "5d", "5c", "6h", "6s", "6d", "6c", "7h", "7s", "7d", "7c", "8h", "8s", "8d", "8c", "9h", "9s", "9d", "9c", "10h", "10s", "10d", "10c", "Jackh", "Jacks", "Jackd", "Jackc", "Queenh", "Queens", "Queend", "Queenc", "Kingh", "Kings", "Kingd", "Kingc" ]
 
-  var final           = 0
-  var dealer_turn     = 1
-  var buttons_enabled = true
+  var hand            = []
+  var dealer_hand     = []
+  var community_hand  = []
+  var call_enabled    = true
+  var fold_enabled    = true
   var restart_enabled = true
 
   const state = document.getElementById("state");
   const hp    = document.getElementById("h_p");
   const dp    = document.getElementById("d_p");
 
-  let card;
-  let dealer_card;
-  let dealer_first;
-
-  const values =
+  const values = 
   {
-    "Aceh"    : 1,
-    "2h"      : 2,
-    "3h"      : 3,
-    "4h"      : 4,
-    "5h"      : 5,
-    "6h"      : 6,
-    "7h"      : 7,
-    "8h"      : 8,
-    "9h"      : 9,
-    "10h"     : 10,
-    "Jackh"   : 11,
-    "Queenh"  : 12,
-    "Kingh"   : 13,
+    "ace":    14,
+    "2":    2,
+    "3":    3,
+    "4":    4,
+    "5":    5,
+    "6":    6,
+    "7":    7,
+    "8":    8,
+    "9":    9,
+    "10":     10,
+    "jack":   11,
+    "queen":  12,
+    "king":   13
   }
 
   initial()
@@ -244,50 +241,69 @@
   async function initial()
   {
     restart_enabled = true;
-    
-    card          = await player_draw()
+
+    for(let i = 0; i < 2; i++)
+    {
+      await player_draw(hand)
+      await community_draw(community_hand)
+      
+      const container = document.getElementById("dealer_hand")
+      const image     = document.createElement("img")
+
+      image.src = `cards/secret.png`;
+      image.className = "card"
+
+      container.appendChild(image)
+
+      setTimeout(() => 
+      {
+        image.classList.add("show")
+      }, 50)
+    }
   } 
 
-  async function player_draw()
+  async function player_draw(hand)
   {
     const card = Math.floor(Math.random() * (deck.length - 1))
 
-    add("card", deck[card])
+    add("hand", deck[card])
 
-    c = values[deck[card]]
+    hand.push(deck[card])
 
     deck.splice(card, 1)
-
-    hp.innerHTML = `Your card <span style="color: grey">(Value: ${c})</span>`
-
-    return c;
+    return
   }
 
-  async function dealer_draw()
+  async function dealer_draw(dealer_hand)
   {
-    const card      = Math.floor(Math.random() * (deck.length - 1))
-    const container = document.getElementById("dealer_card")
-    const image     = document.createElement("img")
+    const card = Math.floor(Math.random() * (deck.length - 1))
 
-    add("dealer_card", deck[card])
+    add("dealer_hand", deck[card])
 
-    c = values[deck[card]]
+    dealer_hand.push(deck[card])
 
     deck.splice(card, 1)
-
-    dp.innerHTML = `Dealer's card <span style="color: grey">(Value: ${c})</span>`
-
-    return c;
+    return
   }
 
+  async function community_draw(community_hand)
+  {
+    const card = Math.floor(Math.random() * (deck.length - 1))
+
+    add("community_hand", deck[card])
+
+    community_hand.push(deck[card])
+
+    deck.splice(card, 1)
+    return
+  }
 
   function add(cID, name)
   {
     const container = document.getElementById(cID)
     const image     = document.createElement("img")
 
-
-    image.src = `cards/${name}.png`
+    image.src = `cards/${name}.png`;
     image.className = "card"
 
     container.appendChild(image)
@@ -298,28 +314,31 @@
     }, 50)
   }
 
-  async function higher()
+  async function call()
   {
-    showdown(1)
+    console.log("balls2electricgoogaloo")
   }
 
-  async function lower()
+  async function fold()
   {
-    showdown(2)
+    console.log("ball")
   }
 
   function restart()
   {
     if(restart_enabled === false) return;
 
-    final           = 0
-    buttons_enabled = true
+    hand            = []
+    dealer_hand     = []
+    community_hand  = []
+    call_enabled    = true
+    fold_enabled    = true
     restart_enabled = false
 
-    deck = [ "Aceh", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "10h", "Jackh", "Queenh", "Kingh" ]
+    deck = [ "Aceh", "Aces", "Aced", "Acec", "2h", "2s", "2d", "2c", "3h", "3s", "3d", "3c", "4h", "4s", "4d", "4c", "5h", "5s", "5d", "5c", "6h", "6s", "6d", "6c", "7h", "7s", "7d", "7c", "8h", "8s", "8d", "8c", "9h", "9s", "9d", "9c", "10h", "10s", "10d", "10c", "Jackh", "Jacks", "Jackd", "Jackc", "Queenh", "Queens", "Queend", "Queenc", "Kingh", "Kings", "Kingd", "Kingc" ]
 
-    const dealer = document.getElementById("dealer_card")
-    const player = document.getElementById("card")
+    const dealer = document.getElementById("dealer_hand")
+    const player = document.getElementById("hand")
 
     const d_cards = dealer.querySelectorAll(".card")
     const p_cards = player.querySelectorAll(".card")
@@ -349,37 +368,29 @@
       state.innerHTML = "";
 
       document.getElementById("b_restart").style.display  = "none"
-      document.getElementById("b_higher").style.display   = "inline-block"
-      document.getElementById("b_lower").style.display    = "inline-block"
+      document.getElementById("b_hit").style.display      = "inline-block"
+      document.getElementById("b_stand").style.display    = "inline-block"
 
-      hp.innerHTML = `Your card`
-      dp.innerHTML = `Dealer's card`
+      hp.innerHTML = `Your hand`
+      dp.innerHTML = `Dealer's hand`
 
       initial()
     }, 500)
   }
 
-  async function showdown(chosen)
+  function dealer_end(dealer_hand)
   {
-    dealer_card   = await dealer_draw()
+    calculate(dealer_hand, "dealer")
 
-    if(dealer_card > card)  final = 1
-    if(dealer_card < card)  final = 2
+    const container = document.getElementById("dealer_hand")
+    const image     = document.createElement("img")
 
-    if(chosen === final)
-    {
-      //player win
-      state.innerHTML = `<span style="color: green">Win!</span>`
-    }
-    else
-    {
-      //lost
-      state.innerHTML = `<span style="color: red">Lose!</span>`
-    }
+    image.src       = dealer_first
+    image.className = "card"
 
-    document.getElementById("b_restart").style.display  = "inline-block"
-    document.getElementById("b_higher").style.display   = "none"
-    document.getElementById("b_lower").style.display    = "none"
+    image.classList.add("show")
+
+    container.replaceChild(image, container.firstChild);
   }
 </script>
 </body>
