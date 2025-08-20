@@ -109,6 +109,17 @@
       opacity: 1;
       transform: translateY(0);
     }
+    .card.community
+    {
+      vertical-align: bottom;
+      min-width: 30;
+      width: 18vw;
+      max-width: 60px;
+      height: 20vw;
+      min-height: 35px;
+      max-height: 70px; 
+      border-radius: 8px;
+    }
     #player-cards, #dealer-cards 
     {
       display: inline-flex;
@@ -121,13 +132,22 @@
       display: flex;
       flex-wrap: wrap; 
       justify-content: center;
-      min-height: 90px;
+      min-height: 45px;
+      max-height: 90px; 
     }
     #dealer_hand
     {
       display: flex;
       flex-wrap: wrap; 
       justify-content: center;
+    }
+    #community_hand
+    {
+      display: flex;
+      flex-wrap: wrap; 
+      justify-content: center;
+      min-height: 35px;
+      max-height: 70px; 
     }
     button 
     {
@@ -161,9 +181,9 @@
     <p>
       Dealer must qualify with a Pair of 4's<br>
     </p>
-    <h1 id="state" style="font-size: 1.5em"></h2>
-    <div id="blackjack-game" style="text-align:center; margin-top: 50px;">
-      <div style="margin-top: 50px;">
+    <h1 id="state" style="font-size: 1.5em"></h1>
+    <div id="poker-game" style="text-align:center;">
+      <div style="margin-top: 2em;">
         <div id="hand"></div>
         <h3 id="h_p">Your Hand</h3>
       </div>
@@ -290,7 +310,7 @@
   {
     const card = Math.floor(Math.random() * (deck.length - 1))
 
-    add("community_hand", deck[card])
+    add("community_hand", deck[card], true)
 
     community_hand.push(deck[card])
 
@@ -298,7 +318,7 @@
     return
   }
 
-  function add(cID, name)
+  function add(cID, name, community)
   {
     const container = document.getElementById(cID)
     const image     = document.createElement("img")
@@ -307,6 +327,8 @@
     image.className = "card"
 
     container.appendChild(image)
+
+    if(community) image.classList.add("community")
 
     setTimeout(() => 
     {
@@ -320,19 +342,49 @@
 
     call_enabled = false
     fold_enabled = false
+
+    for(let i = 0; i < 3; i++)
+    {
+      await community_draw(community_hand)
+    }
+
+    const container = document.getElementById("dealer_hand")
+
+    container.replaceChildren()
+
+    for(let i = 0; i < 2; i++)
+    {
+      await dealer_draw(dealer_hand)
+    }
+
+    document.getElementById("b_restart").style.display  = "inline-block"
+    document.getElementById("b_call").style.display     = "none"
+    document.getElementById("b_fold").style.display     = "none"
+
+    window.scrollTo(0, document.body.scrollHeight);
+
+    calculate()
   }
 
   async function fold()
   {
     if(!fold_enabled) return;
-    
+
     call_enabled = false
     fold_enabled = false
+
+    state.innerHTML = `<span style="color: orange">Folded!</span> Guess that's it`
+
+    document.getElementById("b_restart").style.display  = "inline-block"
+    document.getElementById("b_call").style.display     = "none"
+    document.getElementById("b_fold").style.display     = "none"
+
+    window.scrollTo(0, document.body.scrollHeight);
   }
 
   function restart()
   {
-    if(restart_enabled === false) return;
+    if(!restart_enabled) return;
 
     hand            = []
     dealer_hand     = []
@@ -343,11 +395,13 @@
 
     deck = [ "Aceh", "Aces", "Aced", "Acec", "2h", "2s", "2d", "2c", "3h", "3s", "3d", "3c", "4h", "4s", "4d", "4c", "5h", "5s", "5d", "5c", "6h", "6s", "6d", "6c", "7h", "7s", "7d", "7c", "8h", "8s", "8d", "8c", "9h", "9s", "9d", "9c", "10h", "10s", "10d", "10c", "Jackh", "Jacks", "Jackd", "Jackc", "Queenh", "Queens", "Queend", "Queenc", "Kingh", "Kings", "Kingd", "Kingc" ]
 
-    const dealer = document.getElementById("dealer_hand")
-    const player = document.getElementById("hand")
+    const dealer    = document.getElementById("dealer_hand")
+    const player    = document.getElementById("hand")
+    const community = document.getElementById("community_hand")
 
     const d_cards = dealer.querySelectorAll(".card")
     const p_cards = player.querySelectorAll(".card")
+    const c_cards = community.querySelectorAll(".card")
 
     d_cards.forEach(card =>
     {
@@ -369,13 +423,23 @@
       }, 400)
     })
 
+    c_cards.forEach(card =>
+    {
+      card.classList.remove("show")
+
+      setTimeout(() =>
+      {
+        card.remove()
+      }, 400)
+    })
+
     setTimeout(() =>
     {
       state.innerHTML = "";
 
       document.getElementById("b_restart").style.display  = "none"
-      document.getElementById("b_hit").style.display      = "inline-block"
-      document.getElementById("b_stand").style.display    = "inline-block"
+      document.getElementById("b_call").style.display     = "inline-block"
+      document.getElementById("b_fold").style.display     = "inline-block"
 
       hp.innerHTML = `Your hand`
       dp.innerHTML = `Dealer's hand`
@@ -384,20 +448,6 @@
     }, 500)
   }
 
-  function dealer_end(dealer_hand)
-  {
-    calculate(dealer_hand, "dealer")
-
-    const container = document.getElementById("dealer_hand")
-    const image     = document.createElement("img")
-
-    image.src       = dealer_first
-    image.className = "card"
-
-    image.classList.add("show")
-
-    container.replaceChild(image, container.firstChild);
-  }
 </script>
 </body>
 </html>
